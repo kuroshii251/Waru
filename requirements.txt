@@ -1,0 +1,5 @@
+asyncpg
+dotenv
+fastapi
+pydantic
+fastapi_asyncpg
