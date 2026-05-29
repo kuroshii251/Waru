@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Products(BaseModel):
+class Products(BaseModel):  # done
     # id: int | None = None
     product_name: str
     price: float

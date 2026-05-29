@@ -1,8 +1,8 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    phone_number VARCHAR(20) NOT NULL,  -- Gunakan VARCHAR untuk nomor telepon
-    email VARCHAR(100) NOT NULL UNIQUE, -- Tambahkan UNIQUE untuk email
+    phone_number VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL
 );
 
@@ -22,11 +22,11 @@ CREATE TABLE products (
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,       -- Ubah dari VARCHAR ke DECIMAL
+    price DECIMAL(10,2) NOT NULL,
     quantity INT NOT NULL,
     recipient_name VARCHAR(100) NOT NULL,
-    recipient_address TEXT NOT NULL,    -- Gunakan TEXT untuk alamat panjang
-    total_price DECIMAL(10,2) NOT NULL, -- Ubah dari VARCHAR ke DECIMAL
+    recipient_address TEXT NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
     product_picture VARCHAR(100) NOT NULL,
     user_id BIGINT,
     FOREIGN KEY (user_id)
@@ -37,7 +37,7 @@ CREATE TABLE orders (
 CREATE TABLE cart (
     id SERIAL PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,       -- Ubah dari VARCHAR ke DECIMAL
+    price DECIMAL(10,2) NOT NULL,
     product_picture VARCHAR(100) NOT NULL,
     quantity INT NOT NULL,
     user_id BIGINT,
@@ -46,6 +46,6 @@ CREATE TABLE cart (
         REFERENCES users(id)
         ON DELETE CASCADE,
     FOREIGN KEY (product_id)
-        REFERENCES products(id)         -- Pastikan nama tabel 'products' sesuai
+        REFERENCES products(id)
         ON DELETE CASCADE
 );
