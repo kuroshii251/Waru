@@ -1,8 +1,4 @@
-# from unittest import result
-
-from itertools import product
-
-from fastapi import Depends, FastAPI, Query
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.templating import Jinja2Templates
 
 from backend.src.utils.db import setup_database
@@ -147,3 +143,81 @@ async def delete_cart(id: int, conn=Depends(db.connection)):
     sql = "DELETE FROM products WHERE id = $1"
     result = await conn.execute(sql, id)
     return {"msg": "berhasil delete", "data": result}
+
+
+@app.post("/api/order")
+async def order_items(order: Orders, conn=Depends(db.connection)):
+    async with conn.transaction():
+        product = await conn.fetchrow(
+            "SELECT id, product_name, price, quantity, product_picture FROM products WHERE id = $1 FOR UPDATE",
+            order.id,
+        )
+
+        if not product:
+            raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
+
+        if product["quantity"] < order.quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Stok tidak cukup! Tersisa: {product['quantity']}",
+            )
+
+        total_price = float(product["price"]) * order.quantity
+
+        await conn.execute(
+            "UPDATE products SET quantity = quantity - $1 WHERE id = $2",
+            order.quantity,
+            order.id,
+        )
+
+        current_user_id = 1
+
+        insert_sql = """
+            INSERT INTO orders (
+                product_name,
+                price,
+                quantity,
+                recipient_name,
+                recipient_address,
+                total_price,
+                product_picture,
+                user_id
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *;
+        """
+
+        new_order = await conn.fetchrow(
+            insert_sql,
+            product["product_name"],
+            product["price"],
+            order.quantity,
+            order.recipient_name,
+            order.recipient_address,
+            total_price,
+            product["product_picture"],
+            current_user_id,
+        )
+
+    return new_order
+
+
+@app.get("/api/orders/history", response_model=list[Orders])
+async def get_order_history(
+    user_id: int,
+    limit: int = 10,
+    offset: int = 0,
+    conn=Depends(db.connection),
+):
+    sql = """
+        SELECT * FROM orders
+        WHERE user_id = $1
+        ORDER BY id DESC
+        LIMIT $2 OFFSET $3
+    """
+
+    rows = await conn.fetch(sql, user_id, limit, offset)
+
+    if not rows:
+        return []
+
+    return rows

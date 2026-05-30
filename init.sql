@@ -3,7 +3,8 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL
+    password VARCHAR(100) NOT NULL,
+    address TEXT
 );
 
 CREATE TABLE products (
