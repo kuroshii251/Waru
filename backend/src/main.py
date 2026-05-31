@@ -11,6 +11,7 @@ from backend.src import models
 from typing import Optional
 import uuid
 import os
+from pathlib import Path
 import shutil
 from datetime import datetime
 from backend.src.utils.scemas import (
@@ -30,7 +31,13 @@ import bcrypt
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
-templates = Jinja2Templates(directory="frontend/src/templates")
+BASE_DIR = Path(__file__).resolve().parents[2]  # naik 2 level dari backend/src/
+
+templates = Jinja2Templates(directory=str(BASE_DIR / "frontend/src/templates"))
+
+
+app.mount("/public", StaticFiles(directory=str(BASE_DIR / "frontend/src/public")), name="public")
+app.mount("/uploads", StaticFiles(directory=str(BASE_DIR / "frontend/src/public/uploads")), name="uploads")
 
 setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
