@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from backend.src.utils.db import setup_database, get_conn
 from backend.src import models
 from typing import Optional
+from jinja2 import Environment, FileSystemLoader
 import uuid
 import os
 from pathlib import Path
@@ -34,7 +35,8 @@ app = FastAPI()
 BASE_DIR = Path("/var/task")
 
 
-templates = Jinja2Templates(directory=str(BASE_DIR / "frontend/src/templates"))
+env = Environment(loader=FileSystemLoader(str(BASE_DIR / "frontend/src/templates")))
+templates = Jinja2Templates(env=env)
 
 setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
