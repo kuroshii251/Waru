@@ -1,0 +1,224 @@
+<!Doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+  </head>
+  <body class="bg-black">
+  <aside
+  class="fixed h-screen z-40 transform md:translate-x-0 transition-transform duration-300 will-change-transform overflow-x-hidden w-72 border-white/10 border-r top-0 bottom-0 left-0 backdrop-blur-xl"
+  style="" id="sidebar">
+  <div class="flex flex-col h-full">
+      <div class="flex border-white/10 border-b p-4 items-center justify-between h-16 shrink-0">
+       <a href="/" class="flex items-center gap-1.5 group shrink-0">
+          <div class="flex items-center h-9 w-10">
+            <img
+  src="../../../public/logo.png"
+  alt="Waru Logo"
+  class="h-full w-full object-contain object-left"
+/>
+          </div>
+
+          <h1
+            class="text-xl font-bold tracking-wider text-red-600 dark:text-red-500 transition-colors group-hover:opacity-80 font-sans leading-none"
+          >
+            Waru
+          </h1>
+        </a>
+      <div class="inline-flex items-center gap-2">
+        <button id="toggleCollapse" class="hidden md:inline-flex items-center justify-center h-8 w-8 rounded-lg border border-white/10 bg-white/5" aria-label="Toggle sidebar" aria-pressed="false" title="Collapse sidebar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevrons-left" class="lucide lucide-chevrons-left w-4 h-4 text-white/70" data-icon="left" style=""><path d="m11 17-5-5 5-5" class=""></path><path d="m18 17-5-5 5-5" class=""></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevrons-right" class="lucide lucide-chevrons-right w-4 h-4 text-white/70" data-icon="right" style="display: none;"><path d="m6 17 5-5-5-5" class=""></path><path d="m13 17 5-5-5-5" class=""></path></svg>
+            </button>
+        <button id="closeSidebar" class="md:hidden inline-flex items-center justify-center h-8 w-8 rounded-lg border border-white/10 bg-white/5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" class="lucide lucide-x w-4 h-4 text-white/70"><path d="M18 6 6 18" class=""></path><path d="m6 6 12 12" class=""></path></svg>
+            </button>
+      </div>
+    </div>
+
+      <nav class="flex-1 overflow-y-auto pt-4 px-3 space-y-1">
+        <div class="px-2 mb-2" data-collapse-hide style="display: none;">
+          <p class="text-[11px] uppercase tracking-wider text-white/40 font-medium font-geist">Main</p>
+        </div>
+        
+        <div class="space-y-1">
+          <a href="/dashboard-admin" class="group flex items-center gap-3 hover:text-white hover:bg-white/5 hover:border-white/10 text-sm text-white/80 border-transparent border rounded-lg p-2.5" title="Overview">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+            <span class="font-geist navigation-text" style="display: none;">Dashboard</span>
+          </a>
+          
+          <a href="/list-product" class="group flex items-center gap-3 hover:text-white hover:bg-white/5 hover:border-white/10 text-sm text-white/80 border-transparent border rounded-lg p-2.5" title="Product">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg>
+            <span class="font-geist navigation-text" style="display: none;">Produk</span>
+          </a>
+          
+          <a href="/manage-orders" class="group flex items-center gap-3 rounded-lg p-2.5 text-sm font-medium text-white/90 bg-white/10 border border-white/10" title="Manage Order">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 text-emerald-400 shrink-0"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+            <span class="font-geist navigation-text" style="display: none;">Kelola Pesanan</span>
+          </a>
+          
+          <a href="/alamat" class="group flex items-center gap-3 rounded-lg p-2.5 text-sm text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10" title="Address">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
+            <span class="font-geist navigation-text" style="display: none;">Kelola Alamat</span>
+          </a>
+
+          <a href="/list-users" class="group flex items-center gap-3 rounded-lg p-2.5 text-sm text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10" title="Users">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span class="font-geist navigation-text" style="display: none;">Pengguna</span>
+          </a>
+        </div>
+      </nav>
+
+
+    <div class="px-4 py-4 border-t border-white/10" data-collapse-hide="" style="">
+      <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3">
+        <a href="/logout">
+        <div class="flex items-center gap-2 justify-center items-center text-center">
+         
+          <p class="text-xs font-medium text-emerald-200 font-geist">Logout</p>
+        </div>
+        </a>
+   
+      </div>
+    </div>
+  </div>
+
+  <script class="">
+    (function () {
+          const sidebar = document.getElementById('sidebar');
+          const collapseBtn = sidebar.querySelector('#toggleCollapse');
+          const iconLeft = collapseBtn ? collapseBtn.querySelector('[data-icon="left"]') : null;
+          const iconRight = collapseBtn ? collapseBtn.querySelector('[data-icon="right"]') : null;
+          const brandBar = sidebar.querySelector('.border-b');
+          const brandLink = brandBar ? brandBar.querySelector('a') : null;
+
+          const selectMain = () => sidebar.nextElementSibling;
+
+        function setCollapsed(collapsed) {
+    try {
+        const main = selectMain();
+        if (collapsed) {
+            sidebar.style.width = '64px';
+            sidebar.classList.add('collapsed');
+            sidebar.querySelectorAll('[data-collapse-hide]').forEach(el => { el.style.display = 'none'; });
+            sidebar.querySelectorAll('nav a span.font-geist').forEach(el => { el.style.display = 'none'; });
+            if (brandLink) brandLink.style.display = 'none';
+            if (brandBar) { brandBar.style.paddingLeft = '8px'; brandBar.style.paddingRight = '8px'; }
+            if (main) main.style.marginLeft = '64px'; // ← ikut ngecil
+            if (iconLeft && iconRight) { iconLeft.style.display = 'none'; iconRight.style.display = ''; }
+            if (collapseBtn) { collapseBtn.setAttribute('aria-pressed', 'true'); collapseBtn.title = 'Expand sidebar'; }
+            localStorage.setItem('sidebarCollapsed', '1');
+        } else {
+            sidebar.style.width = '';
+            sidebar.classList.remove('collapsed');
+            sidebar.querySelectorAll('[data-collapse-hide]').forEach(el => { el.style.display = ''; });
+            sidebar.querySelectorAll('nav a span.font-geist').forEach(el => { el.style.display = ''; });
+            if (brandLink) brandLink.style.display = '';
+            if (brandBar) { brandBar.style.paddingLeft = ''; brandBar.style.paddingRight = ''; }
+            if (main) main.style.marginLeft = '288px'; // ← balik ke 72 (18rem = 288px)
+            if (iconLeft && iconRight) { iconLeft.style.display = ''; iconRight.style.display = 'none'; }
+            if (collapseBtn) { collapseBtn.setAttribute('aria-pressed', 'false'); collapseBtn.title = 'Collapse sidebar'; }
+            localStorage.setItem('sidebarCollapsed', '0');
+        }
+    } catch (e) {}
+}
+
+          // Initialize state from storage or fallback to DOM state
+          const stored = localStorage.getItem('sidebarCollapsed');
+          const initialCollapsed = stored ? stored === '1' : sidebar.classList.contains('collapsed');
+          setCollapsed(initialCollapsed);
+
+          if (collapseBtn) {
+            collapseBtn.addEventListener('click', () => {
+              const isCollapsed = sidebar.classList.contains('collapsed');
+              setCollapsed(!isCollapsed);
+            });
+          }
+        })();
+  </script>
+</aside>
+ <main id="content" class="ml-72 p-6">
+  <div class="mb-5 flex items-center justify-between p-3">
+  <div>
+    <h1 class="text-white text-2xl font-semibold">User Management</h1>
+    <p class="text-zinc-400 text-sm mt-1">Daftar seluruh pengguna sistem</p>
+  </div>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40 backdrop-blur">
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left">
+
+      <!-- HEADER -->
+      <thead class="bg-zinc-800/50 text-zinc-300 uppercase text-xs tracking-wider">
+        <tr>
+          <th class="px-6 py-4">ID</th>
+          <th class="px-6 py-4">User</th>
+          <th class="px-6 py-4">Email</th>
+          <th class="px-6 py-4">Role</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-zinc-800">
+
+        {% for user in users %}
+        <tr class="hover:bg-zinc-800/30 transition">
+          <td class="px-6 py-4 text-zinc-500 font-medium">
+            {{ loop.index }}
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3">
+
+              <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-semibold uppercase">
+                {{ user.name[0] }}
+              </div>
+
+              <div>
+                <p class="text-white font-medium">{{ user.name }}</p>
+              </div>
+
+            </div>
+          </td>
+
+          <!-- EMAIL -->
+          <td class="px-6 py-4 text-zinc-300">
+            {{ user.email }}
+          </td>
+
+          <!-- ROLE -->
+          <td class="px-6 py-4">
+            {% if user.role == "admin" %}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              Admin
+            </span>
+            {% else %}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+              User
+            </span>
+            {% endif %}
+          </td>
+
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+</div>
+  </main></body>
+</html>

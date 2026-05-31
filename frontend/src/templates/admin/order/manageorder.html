@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manajemen Produk - Waru</title>
+    <title>Manage Orders - Waru</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -26,7 +26,7 @@
         -o-transition: none !important;
         transition: none !important;
       }
-      /* Kustomisasi scrollbar halus */
+      /* Kustomisasi scrollbar halus untuk area tabel lebar */
       ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
@@ -78,32 +78,31 @@
         
         <div class="space-y-1">
           <a href="/dashboard-admin" class="group flex items-center gap-3 hover:text-white hover:bg-white/5 hover:border-white/10 text-sm text-white/80 border-transparent border rounded-lg p-2.5" title="Overview">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
-            <span class="font-geist navigation-text" style="display: none;">Dashboard</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+            <span class="font-geist navigation-text" style="display: none;">Overview</span>
           </a>
           
           <a href="/list-product" class="group flex items-center gap-3 hover:text-white hover:bg-white/5 hover:border-white/10 text-sm text-white/80 border-transparent border rounded-lg p-2.5" title="Product">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg>
-            <span class="font-geist navigation-text" style="display: none;">Produk</span>
+            <span class="font-geist navigation-text" style="display: none;">Product</span>
           </a>
           
           <a href="/manage-orders" class="group flex items-center gap-3 rounded-lg p-2.5 text-sm font-medium text-white/90 bg-white/10 border border-white/10" title="Manage Order">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 text-emerald-400 shrink-0"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
-            <span class="font-geist navigation-text" style="display: none;">Kelola Pesanan</span>
+            <span class="font-geist navigation-text" style="display: none;">Manage Order</span>
           </a>
           
-          <a href="/alamat" class="group flex items-center gap-3 rounded-lg p-2.5 text-sm text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10" title="Address">
+          <a href="/alamat" class="group flex items-center gap-3 hover:text-white hover:bg-white/5 hover:border-white/10 text-sm text-white/80 border-transparent border rounded-lg p-2.5" title="Address">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
-            <span class="font-geist navigation-text" style="display: none;">Kelola Alamat</span>
+            <span class="font-geist navigation-text" style="display: none;">Address</span>
           </a>
 
-          <a href="/list-users" class="group flex items-center gap-3 rounded-lg p-2.5 text-sm text-white/80 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10" title="Users">
+          <a href="/list-users" class="group flex items-center gap-3 hover:text-white hover:bg-white/5 hover:border-white/10 text-sm text-white/80 border-transparent border rounded-lg p-2.5" title="Users">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
-            <span class="font-geist navigation-text" style="display: none;">Pengguna</span>
+            <span class="font-geist navigation-text" style="display: none;">Users</span>
           </a>
         </div>
       </nav>
-
 
       <div class="p-4 border-t border-white/10" data-collapse-hide style="display: none;">
         <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2.5">
@@ -120,12 +119,31 @@
       
       <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-2">
         <div>
-          <h1 class="text-white text-2xl font-bold tracking-tight">Manajemen Produk</h1>
-          <p class="text-zinc-400 text-sm mt-0.5">Kelola katalog barang, pantau tingkat stok ketersediaan, serta perbarui deskripsi produk.</p>
+          <h1 class="text-white text-2xl font-bold tracking-tight">Manage Orders</h1>
+          <p class="text-zinc-400 text-sm mt-0.5">Pantau status, validasi bukti transfer, dan proses pengiriman pesanan.</p>
         </div>
-        <a href="/add-product"
-           class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold px-4 py-2.5 rounded-xl text-xs tracking-wide transition shadow-lg shadow-emerald-500/10 self-start sm:self-center">
-          <i class="fa-solid fa-plus text-[10px]"></i> Tambah Produk
+        <a href="/dashboard-admin"
+           class="self-start sm:self-center px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 rounded-xl text-xs font-medium text-zinc-300 hover:text-white transition-all duration-150 shadow-sm">
+            ← Kembali ke Dashboard
+        </a>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-6 p-1 bg-white/[0.02] border border-white/5 rounded-2xl w-fit">
+        <a href="/manage-orders"
+           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-white bg-transparent hover:bg-white/5">
+            Semua Pesanan
+        </a>
+        <a href="/manage-orders?status=pending"
+           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 bg-yellow-500/10 border border-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20">
+            Pending
+        </a>
+        <a href="/manage-orders?status=paid"
+           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 bg-emerald-500/10 border border-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20">
+            Paid
+        </a>
+        <a href="/manage-orders?status=cancel"
+           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 bg-red-500/10 border border-red-500/10 text-red-400 hover:bg-red-500/20">
+            Canceled
         </a>
       </div>
 
@@ -135,75 +153,104 @@
             
             <thead class="border-b border-white/10 bg-white/[0.02] text-zinc-400 uppercase text-[11px] tracking-wider font-semibold">
               <tr>
-                <th class="px-6 py-4 w-16 text-center">No</th>
-                <th class="px-6 py-4">Nama Produk</th>
-                <th class="px-6 py-4">Harga Unit</th>
-                <th class="px-6 py-4">Stok Ketersediaan</th>
-                <th class="px-6 py-4 max-w-xs">Deskripsi Ringkas</th>
-                <th class="px-6 py-4 text-center">Pratinjau</th>
-                <th class="px-6 py-4 text-center">Manajemen Aksi</th>
+                <th class="px-5 py-4 w-16 text-center">ID</th>
+                <th class="px-5 py-4">Produk</th>
+                <th class="px-5 py-4">Pembeli</th>
+                <th class="px-5 py-4 max-w-xs">Alamat Pengiriman</th>
+                <th class="px-5 py-4">Patokan</th>
+                <th class="px-5 py-4 text-center">Qty</th>
+                <th class="px-5 py-4 text-right">Total Tagihan</th>
+                <th class="px-5 py-4 text-center">Bukti Bayar</th>
+                <th class="px-5 py-4 text-center">Status</th>
+                <th class="px-5 py-4 text-center">Aksi Operasional</th>
               </tr>
             </thead>
 
             <tbody class="divide-y divide-white/5">
-              {% for product in products %}
+              {% for o in orders %}
               <tr class="hover:bg-white/[0.01] transition-colors duration-150">
                 
-                <td class="px-6 py-4 text-center text-zinc-500 font-mono text-xs">
-                  {{ loop.index }}
+                <td class="px-5 py-4 text-center text-zinc-500 font-mono text-xs">
+                  #{{ o.id }}
                 </td>
 
-                <td class="px-6 py-4">
-                  <div class="font-semibold text-zinc-100 tracking-wide text-sm">
-                    {{ product.product_name }}
-                  </div>
-                  <div class="text-[11px] text-zinc-500 font-medium tracking-wide mt-0.5">
-                    ID Item: #{{ product.id }}
-                  </div>
-                </td>
-
-                <td class="px-6 py-4 text-emerald-400 font-bold font-mono">
-                  Rp {{ "{:,.0f}".format(product.price) }}
-                </td>
-
-                <td class="px-6 py-4">
-                  <span class="inline-flex px-2.5 py-1 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold tracking-wide">
-                    {{ product.quantity }} pcs
-                  </span>
-                </td>
-
-                <td class="px-6 py-4 text-zinc-400 max-w-xs whitespace-normal">
-                  <p class="line-clamp-2 text-xs leading-relaxed" title="{{ product.description }}">
-                    {{ product.description }}
-                  </p>
-                </td>
-
-                <td class="px-6 py-4 text-center">
-                  <div class="inline-block relative group overflow-hidden rounded-xl border border-white/10 shadow-md">
-                    <img src="/public/uploads/{{ product.product_picture }}"
-                         alt="{{ product.product_name }}"
-                         class="w-10 h-10 object-cover group-hover:scale-110 transition-transform duration-200">
+                <td class="px-5 py-4">
+                  <div class="flex items-center gap-3">
+                    <img src="/public/uploads/{{ o.product_picture }}"
+                         class="w-10 h-10 rounded-xl object-cover border border-white/10 shadow-sm shrink-0">
+                    <span class="text-zinc-100 font-semibold tracking-wide text-sm">{{ o.product_name }}</span>
                   </div>
                 </td>
 
-                <td class="px-6 py-4 text-center">
-                  <div class="inline-flex items-center gap-1.5 bg-black/40 border border-white/10 rounded-xl p-1">
-                    <a href="/update-product/{{ product.id }}"
-                       class="px-3 py-1.5 rounded-lg bg-transparent hover:bg-white/5 text-zinc-300 hover:text-white text-xs font-medium transition-colors duration-150">
-                      Edit
-                    </a>
-                    <button onclick="deleteProduct({{ product.id }})"
-                            class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white text-xs font-bold transition-all duration-150">
-                      Delete
+                <td class="px-5 py-4 text-zinc-300 font-medium">
+                  {{ o.recipient_name }}
+                </td>
+
+                <td class="px-5 py-4 text-zinc-400 max-w-xs truncate" title="{{ o.recipient_address }}">
+                  {{ o.recipient_address }}
+                </td>
+
+                <td class="px-5 py-4 text-zinc-400 max-w-[150px] truncate" title="{{ o.patokan }}">
+                  {{ o.patokan if o.patokan else '-' }}
+                </td>
+
+                <td class="px-5 py-4 text-center text-zinc-300 font-medium">
+                  {{ o.quantity }}
+                </td>
+
+                <td class="px-5 py-4 text-right text-emerald-400 font-bold font-mono">
+                  Rp {{ "{:,.0f}".format(o.total_price) }}
+                </td>
+
+                <td class="px-5 py-4 text-center">
+                  <a href="/public/uploads/payments/{{ o.payment_picture }}" target="_blank" class="inline-block relative group">
+                    <img src="/public/uploads/payments/{{ o.payment_picture }}"
+                         class="w-10 h-10 rounded-lg object-cover border border-white/15 group-hover:border-blue-500/50 transition-all duration-150 shadow-md">
+                    <div class="absolute inset-0 bg-black/40 rounded-lg opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-150">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+                    </div>
+                  </a>
+                </td>
+
+                <td class="px-5 py-4 text-center">
+                  {% if o.status == 'pending' %}
+                    <span class="inline-flex px-2.5 py-1 text-[11px] font-semibold rounded-xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 tracking-wide">Pending</span>
+                  {% elif o.status == 'paid' %}
+                    <span class="inline-flex px-2.5 py-1 text-[11px] font-semibold rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-wide">Paid</span>
+                  {% elif o.status == 'shipped' %}
+                    <span class="inline-flex px-2.5 py-1 text-[11px] font-semibold rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 tracking-wide">Shipped</span>
+                  {% elif o.status == 'delivered' %}
+                    <span class="inline-flex px-2.5 py-1 text-[11px] font-semibold rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 tracking-wide">Delivered</span>
+                  {% elif o.status == 'cancel' %}
+                    <span class="inline-flex px-2.5 py-1 text-[11px] font-semibold rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 tracking-wide">Canceled</span>
+                  {% else %}
+                    <span class="inline-flex px-2.5 py-1 text-[11px] font-semibold rounded-xl bg-zinc-800 text-zinc-300 border border-white/5 tracking-wide">{{ o.status }}</span>
+                  {% endif %}
+                </td>
+
+                <td class="px-5 py-4 text-center">
+                  <form action="/api/order/status/{{ o.id }}" method="post" class="inline-flex items-center gap-1.5 bg-black/40 border border-white/10 rounded-xl p-1">
+                    <select name="status"
+                            class="bg-transparent text-zinc-200 text-xs font-medium rounded-lg pl-2 pr-1 py-1 focus:outline-none cursor-pointer">
+                      <option value="pending" class="bg-zinc-900 text-white" {% if o.status == 'pending' %}selected{% endif %}>Pending</option>
+                      <option value="paid" class="bg-zinc-900 text-white" {% if o.status == 'paid' %}selected{% endif %}>Paid</option>
+                      <option value="processing" class="bg-zinc-900 text-white" {% if o.status == 'processing' %}selected{% endif %}>Processing</option>
+                      <option value="shipped" class="bg-zinc-900 text-white" {% if o.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                      <option value="delivered" class="bg-zinc-900 text-white" {% if o.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                      <option value="cancel" class="bg-zinc-900 text-white" {% if o.status == 'cancel' %}selected{% endif %}>Cancel</option>
+                    </select>
+                    <button type="submit"
+                            class="px-2.5 py-1 bg-zinc-100 hover:bg-white rounded-lg text-[11px] text-black font-bold tracking-wide transition shadow-sm">
+                      Simpan
                     </button>
-                  </div>
+                  </form>
                 </td>
 
               </tr>
               {% else %}
               <tr>
-                <td colspan="7" class="px-6 py-16 text-center text-zinc-500 italic text-sm">
-                  Belum ada komoditas produk yang terdaftar dalam inventaris.
+                <td colspan="10" class="px-5 py-16 text-center text-zinc-500 italic text-sm">
+                  Tidak ditemukan rekam data pesanan masuk saat ini.
                 </td>
               </tr>
               {% endfor %}
@@ -271,30 +318,6 @@
         });
       }
     })();
-  </script>
-
-  <script>
-    async function deleteProduct(id) {
-      const confirmDelete = confirm("Yakin ingin menghapus produk ini?");
-      if (!confirmDelete) return;
-
-      try {
-        const response = await fetch(`/api/products/${id}`, {
-          method: "DELETE"
-        });
-        const result = await response.json();
-
-        if (response.ok) {
-          alert(result.msg || "Produk berhasil dihapus");
-          location.reload();
-        } else {
-          alert("Gagal menghapus produk");
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Terjadi kesalahan jaringan");
-      }
-    }
   </script>
   </body>
 </html>

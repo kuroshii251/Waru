@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.product_name }} - Waru</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.tailwind = {
+            config: {
+                darkMode: "class"
+            }
+        };
+    </script>
+</head>
+<body class="bg-white text-zinc-900 dark:bg-zinc-950 dark:text-white min-h-screen transition-colors duration-300">
+
+<div class="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center h-16 gap-6"> 
+      
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl transition-colors">
+        <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+        </svg>
+        <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <a href="/dashboard" class="flex items-center gap-1.5 group shrink-0">
+        <div class="flex items-center h-9 w-10">
+          <img src="/public/logo.png" alt="Waru Logo" class="h-full w-full object-contain object-left" />
+        </div>
+        <h1 class="text-xl font-bold tracking-wider text-red-600 dark:text-red-500 transition-colors group-hover:opacity-80 font-sans leading-none">
+          Waru
+        </h1>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm shrink-0">
+        <a href="/dashboard" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Beranda</a>
+        <a href="/order" class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Order</a>
+      </nav>
+
+      <div class="w-48 shrink-0 hidden sm:block">
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Cari produk..." class="w-full pl-9 pr-3 py-2 bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:border-zinc-700 rounded-xl text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 shrink-0 ml-auto">
+        <label class="relative inline-flex items-center cursor-pointer select-none">
+          <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" />
+          <div class="w-14 h-8 bg-zinc-300 dark:bg-zinc-800 rounded-full peer peer-checked:bg-red-600 transition-colors duration-300 ease-in-out after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full"></div>
+        </label>
+        
+        <a href="/cart" class="relative w-9 h-9 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" aria-label="Keranjang">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
+          </svg>
+          {% if cart_count | default(0) > 0 %}
+            <span class="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-950">
+              {{ cart_count }}
+            </span>
+          {% endif %}
+        </a>
+
+        <div class="w-px h-5 bg-zinc-300 dark:bg-zinc-700 hidden sm:block"></div>
+        <a href="/auth" class="px-4 py-2 bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity hidden sm:inline-block">
+          Logout
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-4 space-y-4 shadow-xl">
+    <div class="block sm:hidden relative">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+      </svg>
+      <input type="text" id="searchMobileInput" placeholder="Cari produk..." class="w-full pl-9 pr-3 py-2.5 bg-zinc-100 border border-zinc-300 dark:bg-zinc-900 dark:border-zinc-700 rounded-xl text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none" />
+    </div>
+    <nav class="flex flex-col gap-2">
+      <a href="/dashboard" class="block px-3 py-2.5 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 font-medium text-sm">Beranda</a>
+      <a href="/order" class="block px-3 py-2.5 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 font-medium text-sm">Order</a>
+      <a href="/auth" class="block px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 font-semibold text-sm sm:hidden">Logout</a>
+    </nav>
+  </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div class="max-w-6xl mx-auto py-6">
+        <div class="grid lg:grid-cols-2 gap-10 items-start">
+
+            <div class="bg-zinc-100 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800/80 rounded-3xl p-4 shadow-xl shadow-black/5 dark:shadow-black/20">
+                <div class="relative aspect-square w-full rounded-2xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/60">
+                    {% if product.product_picture %}
+                    <img src="/uploads/{{ product.product_picture }}" alt="{{ product.product_name }}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out">
+                    {% else %}
+                    <div class="w-full h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 gap-3">
+                        <svg class="w-16 h-16 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                        <span class="text-sm font-medium tracking-wide">Gambar tidak tersedia</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="space-y-6 sm:py-2">
+                <div>
+                    {% if product.quantity > 0 %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wide uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span> Ready Stock
+                    </span>
+                    {% else %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-xs font-bold text-red-600 dark:text-red-400 tracking-wide uppercase">
+                        Out of Stock
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="space-y-2 border-b border-zinc-200 dark:border-zinc-800 pb-5">
+                    <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900 dark:text-white leading-tight">
+                        {{ product.product_name }}
+                    </h1>
+                    <p id="totalPriceDisplay" class="text-2xl sm:text-3xl font-black text-amber-500 dark:text-amber-400 tracking-tight">
+                        Rp {{ "{:,.0f}".format(product.price) }}
+                    </p>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-xs font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-widest">Deskripsi Produk</h3>
+                    <p class="text-zinc-600 dark:text-zinc-300 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                        {{ product.description if product.description else "Tidak ada deskripsi untuk produk ini." }}
+                    </p>
+                </div>
+
+                <form id="cartForm" class="space-y-6 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                    <input type="hidden" id="product_id" value="{{ product.id }}">
+                    <input type="hidden" id="product_name" value="{{ product.product_name }}">
+                    <input type="hidden" id="price" value="{{ product.price }}">
+                    <input type="hidden" id="product_picture" value="{{ product.product_picture }}">
+
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-widest block">Jumlah Pembelian</label>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center bg-zinc-100 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl p-1 inner-shadow">
+                                <button type="button" onclick="minusQty()" class="w-10 h-10 flex items-center justify-center rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 active:scale-95 transition-all font-bold text-lg">−</button>
+                                <input type="number" id="quantity" value="1" min="1" max="{{ product.quantity }}" class="w-14 h-10 text-center bg-transparent text-zinc-900 dark:text-white font-bold text-sm font-mono focus:outline-none">
+                                <button type="button" onclick="plusQty()" class="w-10 h-10 flex items-center justify-center rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 active:scale-95 transition-all font-bold text-lg">+</button>
+                            </div>
+                            <span class="text-xs text-zinc-500">
+                                Tersisa <span class="text-zinc-900 dark:text-white font-semibold font-mono">{{ product.quantity }}</span> unit
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        {% if product.quantity > 0 %}
+                        <button type="submit" class="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-red-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                            <svg class="w-4 h-4 text-white/90 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7h-15" />
+                            </svg>
+                            Tambah Ke Keranjang
+                        </button>
+                        {% else %}
+                        <button type="button" disabled class="w-full sm:w-auto px-8 py-4 bg-zinc-200 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 rounded-xl font-black text-sm uppercase tracking-wider cursor-not-allowed text-center">
+                            Stok Habis
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+ <div class="relative overflow-hidden border border-white/10 text-white bg-zinc-950 shadow-2xl">
+  <div class="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/10 pointer-events-none"></div>
+
+  <div class="relative z-10 px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
+    <div class="flex flex-col lg:flex-row items-start justify-between gap-12">
+      
+      <div class="max-w-md">
+        <a href="/" class="flex items-center gap-2.5 group shrink-0 w-fit">
+          <div class="h-9 w-10 flex items-center">
+            <img
+              src="/public/logo.png"
+              alt="Waru Logo"
+              class="h-full w-full object-contain object-left"
+            />
+          </div>
+          <h1 class="text-2xl font-black tracking-wider text-red-600 dark:text-red-500 transition-opacity group-hover:opacity-80 font-sans leading-none">
+            Waru
+          </h1>
+        </a>
+        <p class="mt-4 text-sm text-zinc-400 leading-relaxed font-geist">
+Kami membangun Waru, sebuah platform digital yang mengubah cara orang berbelanja di warung tradisional menjadi lebih modern dan praktis.
+
+Melalui sistem jual beli berbasis website, pengguna dapat membeli berbagai kebutuhan warung secara online tanpa harus datang langsung ke lokasi.        </p>
+      </div>
+
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-zinc-500 font-geist">
+        &copy; 2026 Waru. Hak Cipta Dilindungi.
+      </p>
+      
+      <div class="flex items-center gap-2.5">
+        <a
+          href="#"
+          aria-label="Instagram"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-instagram h-4 w-4"
+          >
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+          </svg>
+        </a>
+        <a
+          href="#"
+          aria-label="Twitter"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-twitter h-4 w-4"
+          >
+            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+          </svg>
+        </a>
+        <a
+          href="#"
+          aria-label="LinkedIn"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-linkedin h-4 w-4"
+          >
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect width="4" height="12" x="2" y="9"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    // 1. GLOBAL INITIALIZATION & SELECTORS
+    const toggle = document.getElementById("dark-mode-toggle");
+    const price = Number(document.getElementById("price").value);
+    const qtyInput = document.getElementById("quantity");
+    const totalPriceDisplay = document.getElementById("totalPriceDisplay");
+
+    // 2. DARK MODE LOGIC ENGINE (Satu Instansiasi Bersih)
+    if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+        toggle.checked = true;
+    } else {
+        document.documentElement.classList.remove("dark");
+        toggle.checked = false;
+    }
+
+    toggle.addEventListener("change", () => {
+        if (toggle.checked) {
+            document.documentElement.classList.add("dark");
+            localStorage.theme = "dark";
+        } else {
+            document.documentElement.classList.remove("dark");
+            localStorage.theme = "light";
+        }
+    });
+
+    // 3. RESPONSIVE MOBILE MENU BAR TOGGLE
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
+        
+        menu.classList.toggle('hidden');
+        hamburgerIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('hidden');
+    });
+
+    // 4. LIVE CART CALCULATION LOGIC
+    function updatePrice() {
+        const qty = Number(qtyInput.value);
+        if (qty >= 1) {
+            totalPriceDisplay.innerText = "Rp " + (price * qty).toLocaleString("id-ID");
+        }
+    }
+
+    function plusQty() {
+        const max = Number(qtyInput.max);
+        if (Number(qtyInput.value) < max) {
+            qtyInput.value = Number(qtyInput.value) + 1;
+            updatePrice();
+        }
+    }
+
+    function minusQty() {
+        if (Number(qtyInput.value) > 1) {
+            qtyInput.value = Number(qtyInput.value) - 1;
+            updatePrice();
+        }
+    }
+
+    qtyInput.addEventListener("input", updatePrice);
+
+    // 5. ASYNC CART API SUBMISSION HANDLER
+    document.getElementById("cartForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+            product_id: Number(document.getElementById("product_id").value),
+            product_name: document.getElementById("product_name").value,
+            price: Number(document.getElementById("price").value),
+            product_picture: document.getElementById("product_picture").value,
+            quantity: Number(document.getElementById("quantity").value),
+            user_id: 1
+        };
+
+        try {
+            const response = await fetch("/api/cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Produk berhasil ditambahkan ke keranjang");
+                window.location.href = "/cart";
+            } else {
+                alert(result.detail || "Gagal menambah ke keranjang");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Terjadi kesalahan server");
+        }
+    });
+</script>
+</body>
+</html>

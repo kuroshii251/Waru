@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Waru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      @keyframes popIn {
+        0% { transform: scale(0.9); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      .animate-pop-in {
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
+      }
+    </style>
+</head>
+
+<body class="bg-zinc-950 text-white font-sans min-h-screen relative">
+
+    <div id="statusModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-all duration-300">
+        <div class="max-w-md w-full border border-zinc-800 bg-zinc-900/90 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden animate-pop-in">
+          
+          <div id="modalGlow" class="absolute -top-24 -left-24 w-48 h-48 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div id="modalIconBox" class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full border shadow-lg transition-all duration-300">
+            <i id="modalIcon" class="text-4xl"></i>
+          </div>
+
+          <div class="space-y-2 mb-6">
+            <h1 id="modalTitle" class="text-xl font-bold tracking-tight text-zinc-100">---</h1>
+            <p id="modalDesc" class="text-xs text-zinc-400 leading-relaxed px-2">---</p>
+          </div>
+
+          <div class="mb-6 p-3 border border-zinc-800 bg-zinc-950/50 rounded-xl text-left text-[11px] font-mono text-zinc-500 space-y-1">
+            <div class="flex justify-between">
+              <span>Status Transaksi:</span>
+              <span id="modalLogCode" class="font-bold">---</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Waktu Eksekusi:</span>
+              <span class="text-zinc-400" id="modalLogTime">--:-- WIB</span>
+            </div>
+          </div>
+
+          <a id="modalBtn" href="/order" class="w-full inline-flex items-center justify-center gap-2 font-bold px-5 py-3 rounded-xl text-xs tracking-wide transition shadow-lg">
+            <span>Lanjutkan</span> <i id="modalBtnIcon" class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+    </div>
+
+    <div class="border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50 backdrop-blur-md bg-zinc-950/90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center h-16 gap-6"> 
+                <a href="/dashboard" class="flex items-center gap-1.5 group shrink-0">
+                    <div class="flex items-center h-9 w-10">
+                        <img src="/public/logo.png" alt="Waru Logo" class="h-full w-full object-contain object-left"/>
+                    </div>
+                    <h1 class="text-xl font-black tracking-wider text-red-600 transition-colors group-hover:opacity-80 leading-none">
+                        Waru
+                    </h1>
+                </a>
+
+                <nav class="hidden md:flex items-center gap-6 text-sm shrink-0">
+                    <a href="/dashboard" class="text-zinc-400 hover:text-white transition-colors">Beranda</a>
+                    <a href="/order" class="text-zinc-400 hover:text-white transition-colors">Order</a>
+                </nav>
+
+                <div class="w-48 shrink-0 hidden sm:block ml-4">
+                    <div class="relative">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Cari produk..." class="w-full pl-9 pr-3 py-2 bg-zinc-900 border border-zinc-700 rounded-xl text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500"/>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 shrink-0 ml-auto">
+                    <label class="relative inline-flex items-center cursor-pointer select-none">
+                        <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" />
+                        <div class="w-14 h-8 bg-neutral-700 rounded-full peer transition-colors duration-300 ease-in-out after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+                    </label>
+                    
+                    <a href="/cart" class="relative w-9 h-9 flex items-center justify-center bg-zinc-900 border border-zinc-700 rounded-xl text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors" aria-label="Keranjang">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
+                        </svg>
+                        {% if cart_count | default(0) > 0 %}
+                            <span class="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-zinc-950">
+                                {{ cart_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <div class="w-px h-5 bg-zinc-700"></div>
+
+                    <a href="/auth" class="px-4 py-2 bg-white text-zinc-900 text-sm font-semibold rounded-xl hover:bg-zinc-100 transition-colors">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+        <div class="grid lg:grid-cols-3 gap-8 items-start">
+            
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-zinc-900 border border-zinc-800/80 rounded-2xl p-6 shadow-xl shadow-black/10">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-800">
+                        <div class="w-8 h-8 rounded-lg bg-red-600/10 text-red-500 border border-red-500/20 flex items-center justify-center font-bold text-sm">1</div>
+                        <div>
+                            <h2 class="text-lg font-bold text-white tracking-wide">Alamat Pengiriman</h2>
+                            <p class="text-xs text-zinc-400 mt-0.5">Tentukan ke mana pesanan Anda akan dikirimkan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label for="recipient_name" class="block text-xs font-semibold text-zinc-400 mb-2 uppercase tracking-wider">Nama Penerima</label>
+                            <input id="recipient_name" type="text" class="w-full p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 transition-all shadow-inner" placeholder="Masukkan nama lengkap penerima">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="recipient_address" class="block text-xs font-semibold text-zinc-400 mb-2 uppercase tracking-wider">Pilih Alamat Utama</label>
+                            <div class="relative">
+                                <select id="recipient_address" class="w-full p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl text-sm text-white focus:outline-none focus:border-zinc-700 transition-all appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Memuat daftar alamat...</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-zinc-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="patokan" class="block text-xs font-semibold text-zinc-400 mb-2 uppercase tracking-wider">Patokan Rumah <span class="text-zinc-500 font-normal">(Opsional)</span></label>
+                            <input id="patokan" type="text" class="w-full p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 transition-all shadow-inner" placeholder="Contoh: Samping warung madura atau pagar warna hitam">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-900 border border-zinc-800/80 rounded-2xl p-6 shadow-xl shadow-black/10">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-800">
+                        <div class="w-8 h-8 rounded-lg bg-red-600/10 text-red-500 border border-red-500/20 flex items-center justify-center font-bold text-sm">2</div>
+                        <div>
+                            <h2 class="text-lg font-bold text-white tracking-wide">Bukti Pembayaran</h2>
+                            <p class="text-xs text-zinc-400 mt-0.5">Unggah bukti transfer bank atau scan QRIS yang valid</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center w-full">
+                        <label class="group flex flex-col items-center justify-center w-full h-40 border-2 border-zinc-800 border-dashed rounded-xl cursor-pointer bg-zinc-950/40 hover:bg-zinc-950/80 hover:border-zinc-600 transition-all p-6 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-zinc-900 group-hover:bg-zinc-800 group-hover:scale-110 border border-zinc-800 flex items-center justify-center mb-3 transition-all duration-300">
+                                    <svg class="w-5 h-5 text-zinc-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
+                                    </svg>
+                                </div>
+                                <p id="file-name" class="text-sm text-zinc-300 font-semibold group-hover:text-white transition-colors">Klik untuk menelusuri berkas</p>
+                                <p class="text-xs text-zinc-500 mt-1">Mendukung format PNG, JPG, atau JPEG</p>
+                            </div>
+                            <input type="file" id="payment_picture" accept="image/*" class="hidden" onchange="updateFileName(this)">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between px-1">
+                        <h2 class="text-lg font-bold text-white tracking-wide">Detail Item Pemesanan</h2>
+                        <span class="px-2.5 py-1 bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-bold rounded-full">
+                            {% if carts %}{{ carts|length }}{% else %}0{% endif %} Produk
+                        </span>
+                    </div>
+                    
+                    <div class="divide-y divide-zinc-800/60 bg-zinc-900 border border-zinc-800/80 rounded-2xl overflow-hidden shadow-xl shadow-black/10">
+                        {% if carts %}
+                            {% for item in carts %}
+                            <div class="flex items-center justify-between p-5 hover:bg-zinc-800/30 transition-colors">
+                                <div class="space-y-1.5 flex-grow pr-4">
+                                    <h3 class="font-bold text-white text-base tracking-wide">{{ item.product_name }}</h3>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold px-2 py-0.5 bg-zinc-950 text-zinc-400 border border-zinc-800 rounded">
+                                            {{ item.quantity }}x
+                                        </span>
+                                        <span class="text-xs text-zinc-500">Rp {{ "{:,.0f}".format(item.price) }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-right flex-shrink-0">
+                                    <span class="text-zinc-500 text-[10px] block font-medium uppercase tracking-wider mb-0.5">Total</span>
+                                    <span class="text-white font-extrabold text-base tracking-wide">
+                                        Rp {{ "{:,.0f}".format(item.price * item.quantity) }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-8 text-center text-zinc-500 text-sm">Keranjang belanja kosong.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 lg:sticky lg:top-24">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl shadow-black/30 relative overflow-hidden">
+                    <div class="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-red-600 to-amber-500"></div>
+
+                    <h2 class="text-lg font-bold text-white tracking-wide mb-5 pb-4 border-b border-zinc-800 flex items-center justify-between">
+                        <span>Ringkasan Order</span>
+                        <span class="text-xs text-zinc-500 font-mono font-normal">SECURE CHECKOUT</span>
+                    </h2>
+
+                    <div class="space-y-3.5 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-zinc-400">Subtotal Produk</span>
+                            <span class="text-zinc-300 font-medium">Rp {{ "{:,.0f}".format(total) }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-zinc-400">Biaya Layanan</span>
+                            <span class="text-emerald-500 font-medium">Gratis</span>
+                        </div>
+                        <div class="h-px bg-zinc-800 my-2 border-dashed"></div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-semibold text-white">Total Tagihan</span>
+                            <span class="text-2xl font-black text-emerald-400 tracking-tight">
+                                Rp {{ "{:,.0f}".format(total) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-3.5 bg-zinc-950/80 border border-zinc-800 rounded-xl mb-6">
+                        <div class="text-amber-500 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">
+                            Pesanan Anda diproses dengan enkripsi aman. Pastikan nominal transfer sesuai sebelum mengunggah bukti pembayaran.
+                        </p>
+                    </div>
+
+                    <button id="checkoutBtn" class="group w-full py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-red-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5">
+                        <svg class="w-4 h-4 text-white/80 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        Selesaikan Pembayaran
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="relative overflow-hidden border border-white/10 text-white bg-zinc-950 shadow-2xl">
+      <div class="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/10 pointer-events-none"></div>
+      <div class="relative z-10 px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
+        <div class="flex flex-col lg:flex-row items-start justify-between gap-12">
+          <div class="max-w-md">
+            <a href="/" class="flex items-center gap-2.5 group shrink-0 w-fit">
+              <div class="h-9 w-10 flex items-center">
+                <img src="/public/logo.png" alt="Waru Logo" class="h-full w-full object-contain object-left"/>
+              </div>
+              <h1 class="text-2xl font-black tracking-wider text-red-600 dark:text-red-500 transition-opacity group-hover:opacity-80 font-sans leading-none">
+                Waru
+              </h1>
+            </a>
+            <p class="mt-4 text-sm text-zinc-400 leading-relaxed">
+              Kami membangun Waru, sebuah platform digital yang mengubah cara orang berbelanja di warung tradisional menjadi lebih modern dan praktis.
+            </p>
+          </div>
+        </div>
+        <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-xs text-zinc-500">&copy; 2026 Waru. Hak Cipta Dilindungi.</p>
+        </div>
+      </div>
+    </div>
+
+
+<script>
+const carts = {{ carts | tojson | safe }} || [];
+
+function updateFileName(input) {
+    const fileName = input.files[0] ? input.files[0].name : "Klik untuk menelusuri berkas";
+    document.getElementById("file-name").textContent = fileName;
+}
+
+// BARU: Fungsi UI Trigger Modal Pengganti Alert Bawaan Browser
+function triggerStatusModal(type, title, message, logCode) {
+    const modal = document.getElementById('statusModal');
+    const glow = document.getElementById('modalGlow');
+    const iconBox = document.getElementById('modalIconBox');
+    const icon = document.getElementById('modalIcon');
+    const mTitle = document.getElementById('modalTitle');
+    const mDesc = document.getElementById('modalDesc');
+    const mLogCode = document.getElementById('modalLogCode');
+    const mBtn = document.getElementById('modalBtn');
+    const mBtnIcon = document.getElementById('modalBtnIcon');
+
+    // Set realtime timestamp log
+    const now = new Date();
+    document.getElementById('modalLogTime').textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    
+    mTitle.textContent = title;
+    mDesc.textContent = message;
+    mLogCode.textContent = logCode;
+
+    if (type === 'success') {
+        glow.className = "absolute -top-24 -left-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none";
+        iconBox.className = "mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-lg shadow-emerald-500/10";
+        icon.className = "fa-solid fa-circle-check";
+        
+        mLogCode.className = "text-emerald-400 font-bold";
+        mBtn.href = "/order";
+        mBtn.className = "w-full inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold px-5 py-3 rounded-xl text-xs tracking-wide transition shadow-lg shadow-emerald-500/10";
+        mBtn.querySelector('span').textContent = "Lihat Riwayat Order";
+        mBtnIcon.className = "fa-solid fa-arrow-right text-[10px]";
+    } 
+    else if (type === 'warning') { // Sebagian Berhasil
+        glow.className = "absolute -top-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none";
+        iconBox.className = "mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 shadow-lg shadow-amber-500/10";
+        icon.className = "fa-solid fa-triangle-exclamation";
+        
+        mLogCode.className = "text-amber-400 font-bold";
+        mBtn.href = "/order";
+        mBtn.className = "w-full inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-bold px-5 py-3 rounded-xl text-xs tracking-wide transition shadow-lg shadow-amber-500/10";
+        mBtn.querySelector('span').textContent = "Cek Orderan";
+        mBtnIcon.className = "fa-solid fa-arrow-right text-[10px]";
+    }
+    else { // Gagal Total
+        glow.className = "absolute -top-24 -left-24 w-48 h-48 bg-red-500/10 rounded-full blur-3xl pointer-events-none";
+        iconBox.className = "mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 shadow-lg shadow-red-500/10";
+        icon.className = "fa-solid fa-circle-xmark";
+        
+        mLogCode.className = "text-red-400 font-bold";
+        // Menutup modal untuk coba isi ulang inputan
+        mBtn.href = "javascript:void(0)";
+        mBtn.setAttribute("onclick", "document.getElementById('statusModal').classList.add('hidden')");
+        mBtn.className = "w-full inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-400 text-white font-bold px-5 py-3 rounded-xl text-xs tracking-wide transition shadow-lg";
+        mBtn.querySelector('span').textContent = "Periksa Kembali Formulir";
+        mBtnIcon.className = "fa-solid fa-rotate-right text-[10px]";
+    }
+
+    // Tampilkan modal ke layar
+    modal.classList.remove('hidden');
+}
+
+document.getElementById("checkoutBtn").addEventListener("click", async () => {
+    const name = document.getElementById("recipient_name").value.trim();
+    const patokan = document.getElementById("patokan").value.trim();
+    const address = document.getElementById("recipient_address").value;
+    const file = document.getElementById("payment_picture").files[0];
+
+    if (!name || !address || !file) {
+        triggerStatusModal('error', 'Formulir Tidak Lengkap', 'Harap lengkapi nama penerima, alamat utama, dan unggah berkas bukti transfer Anda.', '400 BAD REQUEST');
+        return;
+    }
+
+    if (carts.length === 0) {
+        triggerStatusModal('error', 'Keranjang Kosong', 'Tidak ada produk dalam daftar belanja Anda untuk diproses checkout.', '422 UNPROCESSABLE');
+        return;
+    }
+
+    let successCount = 0;
+
+    for (const item of carts) {
+        const formData = new FormData();
+        formData.append("product_id", item.product_id);
+        formData.append("quantity", item.quantity);
+        formData.append("recipient_name", name);
+        formData.append("recipient_address", address);
+        formData.append("patokan", patokan);
+        formData.append("user_id", 1); 
+        formData.append("payment_picture", file);
+
+        try {
+            const res = await fetch("/api/order", {
+                method: "POST",
+                body: formData
+            });
+            if (res.ok) {
+                successCount++;
+            } else {
+                const result = await res.json();
+                console.error("API Error Response:", result);
+            }
+        } catch (err) {
+            console.error("Network Fetch Error:", err);
+        }
+    }
+
+    // MODIFIKASI: Penggantian fungsi redirect & alert lama menjadi Modal UI Elegan
+    if (successCount === carts.length) {
+        triggerStatusModal('success', 'Checkout Berhasil!', 'Seluruh pesanan Anda telah didaftarkan ke sistem. Silakan tunggu konfirmasi dari pihak admin waru.', '200 OK / SUCCESS');
+    } else if (successCount > 0) {
+        triggerStatusModal('warning', 'Checkout Parsial', `Hanya ${successCount} dari ${carts.length} produk yang berhasil dikirim. Beberapa item gagal diproses karena kendala server.`, '206 PARTIAL CONTENT');
+    } else {
+        triggerStatusModal('error', 'Checkout Gagal Total', 'Sama sekali tidak ada item yang berhasil diproses. Terjadi gangguan enkripsi transaksi pada jaringan API gateway.', '500 INTERNAL SERVER ERROR');
+    }
+});
+
+async function loadAlamat() {
+    try {
+        const res = await fetch("/api/alamat");
+        if (!res.ok) {
+            console.warn("Gagal memuat API Alamat / Status Unauthorized");
+            return;
+        }
+
+        const data = await res.json();
+        const select = document.getElementById("recipient_address");
+        select.innerHTML = "";
+
+        if (data.length === 0) {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "Belum ada alamat tersimpan. Silakan tambah alamat dulu.";
+            select.appendChild(option);
+            return;
+        }
+
+        data.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.recipient_address;
+            option.textContent = item.recipient_address;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Terjadi galat fungsi loadAlamat:", err);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadAlamat();
+});
+</script>
+</body>
+</html>

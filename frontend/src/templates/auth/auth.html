@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth</title>
+  <style>
+    @property --border-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @property --shimmer-pos {
+      syntax: '<percentage>';
+      initial-value: -100%;
+      inherits: false;
+    }
+
+    :root {
+      --bg: #050514;
+      --bg-alt: #0a0a1e;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.06);
+      --accent: #f59e0b;
+      --accent2: #fbbf24;
+      --accent3: #fb923c;
+      --pink: #f97316;
+      --gold: #fde68a;
+      --text: #e8edf3;
+      --text-muted: #94a3b8;
+      --text-dim: #4b5e78;
+      --border: rgba(245, 158, 11, 0.10);
+      --border-s: rgba(255, 255, 255, 0.06);
+      --glass: rgba(255, 255, 255, 0.03);
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    .nova-container {
+      font-family: var(--font-body);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .bg-noise {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.03;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .bg-aurora {
+      content: '';
+      position: absolute;
+      top: 10%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.04);
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes shimmer-sweep {
+      0% {
+        background-position: -200% center;
+      }
+
+      100% {
+        background-position: 200% center;
+      }
+    }
+
+    .login-form-wrapper {
+      width: 100%;
+      animation: fade-in 0.6s ease-out;
+    }
+
+    .login-heading {
+      font-size: clamp(1.6rem, 2.5vw, 2rem);
+      font-family: var(--font-heading);
+      font-weight: 200;
+      margin-bottom: 6px;
+      letter-spacing: -0.04em;
+      text-align: center;
+    }
+
+    .login-subheading {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-s);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 10px 0;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      border-radius: 8px;
+      transition: color 0.3s;
+      position: relative;
+      z-index: 2;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    .auth-tab.active {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .auth-tab-indicator {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: calc(50% - 4px);
+      height: calc(100% - 8px);
+      border-radius: 8px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.15);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
+    }
+
+    .auth-tab-indicator.right {
+      transform: translateX(100%);
+    }
+
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-s);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .social-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-s);
+    }
+
+    .auth-divider span {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-s);
+      color: var(--text);
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 500;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(245, 158, 11, 0.35);
+    }
+
+    .shimmer-layer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer-sweep 2.5s ease-in-out infinite;
+    }
+
+    .form-view {
+      display: none;
+    }
+
+    .form-view.active {
+      display: block;
+      animation: fade-in 0.4s ease-out;
+    }
+
+    .form-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+
+    .form-footer a {
+      color: var(--accent2);
+      font-weight: 500;
+      text-decoration: none;
+    }
+  </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+<body>
+  <div
+  style="display: flex; align-items: center; justify-content: center; min-height: 100vh; width: 100%; background: #050514; position: relative; overflow: hidden; padding: 100px;">
+  
+
+  <div class="bg-noise"></div>
+  <div class="bg-aurora"></div>
+
+  <div class="nova-container">
+    <div class="login-form-wrapper">
+      <h1 class="login-heading" id="login-title">Selamat datang kembali</h1>
+      <p class="login-subheading" id="login-subtitle">Masuk Ke Akun Waru</p>
+
+      <div class="auth-tabs" id="auth-tabs">
+        <button class="auth-tab active" data-tab="signin">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
+        <div class="auth-tab-indicator" id="tab-indicator"></div>
+      </div>
+
+      <div class="form-view active" id="form-signin">
+<form method="POST" action="/api/auth/login">
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="you@company.com">
+          </div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" name="password" type="password" placeholder="••••••••">
+          </div>
+          <button type="submit" class="submit-btn"><span class="shimmer-layer"></span>Sign In</button>
+        </form>
+        <p class="form-footer">Don't have an account? <a href="#" id="switch-to-signup">Create one</a></p>
+      </div>
+
+      <div class="form-view" id="form-signup">
+<form method="POST" action="/api/auth/register">   
+           <div class="form-group"><label class="form-label">Nama</label><input class="form-input" name="name" type="text" placeholder="John Doe">
+          </div>
+          <div class="form-group"><label class="form-label">Nomor Telepon</label><input class="form-input" name="phone_number" type="text" placeholder="123-456-7890">
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;"><label class="form-label">Email</label><input class="form-input" name="email" type="email" placeholder="you@company.com">
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;"><label class="form-label">Password</label><input class="form-input" name="password" type="password" placeholder="Min. 8 characters">
+          </div>
+          <button type="submit" class="submit-btn"><span class="shimmer-layer"></span>Buat Akun</button>
+        </form>
+        <p class="form-footer">Already have an account? <a href="#" id="switch-to-signin">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" async></script>
+<script>
+  const tabs = document.querySelectorAll('.auth-tab');
+  const indicator = document.getElementById('tab-indicator');
+
+  const signinForm = document.getElementById('form-signin');
+  const signupForm = document.getElementById('form-signup');
+
+  const loginTitle = document.getElementById('login-title');
+  const loginSubtitle = document.getElementById('login-subtitle');
+
+  function switchTab(tabName) {
+
+    tabs.forEach(t => t.classList.remove('active'));
+
+    document
+      .querySelector(`[data-tab="${tabName}"]`)
+      .classList.add('active');
+
+    if (tabName === 'signup') {
+
+      indicator.classList.add('right');
+
+      signinForm.classList.remove('active');
+      signupForm.classList.add('active');
+
+      loginTitle.textContent = 'Daftarkan akunmu';
+
+      loginSubtitle.textContent =
+        'Mulai dengan Waru';
+
+    } else {
+
+      indicator.classList.remove('right');
+
+      signupForm.classList.remove('active');
+      signinForm.classList.add('active');
+
+      loginTitle.textContent = 'Selamat datang kembali';
+
+      loginSubtitle.textContent =
+        'Masuk ke akun Waru mu';
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      switchTab(tab.dataset.tab);
+    });
+  });
+
+  document
+    .getElementById('switch-to-signup')
+    .addEventListener('click', (e) => {
+
+      e.preventDefault();
+
+      switchTab('signup');
+    });
+
+  document
+    .getElementById('switch-to-signin')
+    .addEventListener('click', (e) => {
+
+      e.preventDefault();
+
+      switchTab('signin');
+    });
+
+const activeTab = "{{ active_tab if active_tab else 'signin' }}";
+  switchTab(activeTab);
+
+</script>
+
+
+</div>
+  
+</body>
+</html>
+
