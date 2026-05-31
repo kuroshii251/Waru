@@ -9,7 +9,8 @@ from backend.src.utils.db import setup_database, get_conn
 from backend.src import models
 from starlette.templating import Jinja2Templates
 from typing import Optional
-from jinja2 import Environment, FileSystemLoader
+
+
 import uuid
 import os
 from pathlib import Path
@@ -35,11 +36,11 @@ app = FastAPI()
 BASE_DIR = Path("/var/task")
 
 
-env = Environment(
-    loader=FileSystemLoader(str(BASE_DIR / "frontend/src/templates")),
-    cache_size=0
-)
-templates = Jinja2Templates(env=env)
+BASE_TEMPLATES_DIR = str(BASE_DIR / "frontend/src/templates")
+# Use Starlette's own Jinja2Templates loader. Avoid creating a separate Jinja2 Environment.
+templates = Jinja2Templates(directory=BASE_TEMPLATES_DIR)
+
+
 
 setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
