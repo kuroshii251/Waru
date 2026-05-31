@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from backend.src.utils.db import setup_database, get_conn
 from backend.src import models
+from starlette.templating import Jinja2Templates
 from typing import Optional
 from jinja2 import Environment, FileSystemLoader
 import uuid
