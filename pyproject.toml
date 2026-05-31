@@ -2,6 +2,16 @@
 name = "waru"
 version = "0.1.0"
 requires-python = ">=3.9"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "asyncpg",
+    "bcrypt",
+    "python-dotenv",
+    "jinja2",
+    "python-multipart",
+    "starlette",
+]
 
 [tool.vercel]
 entrypoint = "backend/src/main.py"
