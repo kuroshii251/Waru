@@ -1,2 +1,7 @@
+[project]
+name = "waru"
+version = "0.1.0"
+requires-python = ">=3.9"
+
 [tool.vercel]
-entrypoint = "backend.src.main:app"
+entrypoint = "backend/src/main.py"
