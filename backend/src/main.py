@@ -3,12 +3,12 @@ import sys
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, UploadFile, File, Form
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from backend.src.utils.db import setup_database, get_conn
 from backend.src import models
 from typing import Optional
+from jinja2 import Environment, FileSystemLoader
 import uuid
 import os
 from pathlib import Path
@@ -34,7 +34,11 @@ app = FastAPI()
 BASE_DIR = Path("/var/task")
 
 
-templates = Jinja2Templates(directory=str(BASE_DIR / "frontend/src/templates"))
+env = Environment(
+    loader=FileSystemLoader(str(BASE_DIR / "frontend/src/templates")),
+    cache_size=0
+)
+templates = Jinja2Templates(env=env)
 
 setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
