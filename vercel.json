@@ -5,12 +5,25 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
-          "frontend/**"
+          "frontend/src/templates/**",
+          "frontend/src/public/**"
         ]
       }
+    },
+    {
+      "src": "frontend/src/public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/public/(.*)",
+      "dest": "/frontend/src/public/$1"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/frontend/src/public/uploads/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "backend/src/main.py"

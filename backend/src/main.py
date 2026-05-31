@@ -33,16 +33,13 @@ from starlette.middleware.sessions import SessionMiddleware
 app = FastAPI()
 BASE_DIR = Path("/var/task")
 
-app.mount("/public", StaticFiles(directory=str(BASE_DIR / "frontend/src/public")), name="public")
-app.mount("/uploads", StaticFiles(directory=str(BASE_DIR / "frontend/src/public/uploads")), name="uploads")
+
 templates = Jinja2Templates(directory=str(BASE_DIR / "frontend/src/templates"))
 
 setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
 app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 
-app.mount("/public", StaticFiles(directory="frontend/src/public"), name="public")
-app.mount("/uploads", StaticFiles(directory="frontend/src/public/uploads"), name="uploads")
 
 
 @app.get("/")
