@@ -9,6 +9,7 @@ from backend.src.utils.db import setup_database, get_conn
 from backend.src import models
 from starlette.templating import Jinja2Templates
 from typing import Optional
+from starlette.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader
 import uuid
 import os
