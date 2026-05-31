@@ -1,19 +1,12 @@
-import asyncio
-import sys
-if sys.platform == "win32":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, UploadFile, File, Form
+from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from backend.src.utils.db import setup_database, get_conn
 from backend.src import models
-from starlette.templating import Jinja2Templates
 from typing import Optional
-
-
 import uuid
 import os
-from pathlib import Path
 import shutil
 from datetime import datetime
 from backend.src.utils.scemas import (
@@ -33,19 +26,14 @@ import bcrypt
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
-BASE_DIR = Path("/var/task")
-
-
-BASE_TEMPLATES_DIR = str(BASE_DIR / "frontend/src/templates")
-# Use Starlette's own Jinja2Templates loader. Avoid creating a separate Jinja2 Environment.
-templates = Jinja2Templates(directory=BASE_TEMPLATES_DIR)
-
-
+templates = Jinja2Templates(directory="frontend/src/templates")
 
 setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
 app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 
+app.mount("/public", StaticFiles(directory="frontend/src/public"), name="public")
+app.mount("/uploads", StaticFiles(directory="frontend/src/public/uploads"), name="uploads")
 
 
 @app.get("/")
@@ -112,8 +100,8 @@ async def login(
     request.session["user"] = {"id": user["id"], "email": user["email"], "role": user["role"]}
 
     if user["role"] == "admin":
-        return RedirectResponse(url="/dashboard-admin", status_code=303)
-    return RedirectResponse(url="/dashboard-admin", status_code=303)
+        return RedirectResponse(url="/admin-dashboard", status_code=303)
+    return RedirectResponse(url="/dashboard", status_code=303)
 
 
 @app.get("/list-users", response_class=HTMLResponse)
@@ -445,9 +433,11 @@ async def get_alamat(request: Request, conn=Depends(get_conn)):
         raise HTTPException(401, "Unauthorized")
 
     rows = await conn.fetch(
-        "SELECT id, recipient_address FROM alamat ORDER BY id DESC"
+        "SELECT id, recipient_address FROM alamat WHERE user_id = $1 ORDER BY id DESC",
+        user["id"]
     )
     return [dict(r) for r in rows]
+
 
 @app.put("/api/alamat/{id}")
 async def update_alamat(id: int, data: Alamat, request: Request, conn=Depends(get_conn)):
