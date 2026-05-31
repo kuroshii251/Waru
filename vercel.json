@@ -4,26 +4,15 @@
       "src": "backend/src/main.py",
       "use": "@vercel/python",
       "config": {
+        "runtime": "python3.11",
         "includeFiles": [
           "frontend/src/templates/**",
           "frontend/src/public/**"
         ]
       }
-    },
-    {
-      "src": "frontend/src/public/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/public/(.*)",
-      "dest": "/frontend/src/public/$1"
-    },
-    {
-      "src": "/uploads/(.*)",
-      "dest": "/frontend/src/public/uploads/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "backend/src/main.py"

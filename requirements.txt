@@ -1,5 +1,8 @@
-asyncpg
-dotenv
 fastapi
+jinja2
+python-multipart
+starlette
+bcrypt
+asyncpg
+python-dotenv
 pydantic
-fastapi_asyncpg
