@@ -128,24 +128,79 @@
         </a>
       </div>
 
-      <div class="flex flex-wrap gap-2 mb-6 p-1 bg-white/[0.02] border border-white/5 rounded-2xl w-fit">
-        <a href="/manage-orders"
-           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-white bg-transparent hover:bg-white/5">
-            Semua Pesanan
-        </a>
-        <a href="/manage-orders?status=pending"
-           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 bg-yellow-500/10 border border-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20">
-            Pending
-        </a>
-        <a href="/manage-orders?status=paid"
-           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 bg-emerald-500/10 border border-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20">
-            Paid
-        </a>
-        <a href="/manage-orders?status=cancel"
-           class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150 bg-red-500/10 border border-red-500/10 text-red-400 hover:bg-red-500/20">
-            Canceled
-        </a>
-      </div>
+<div class="flex flex-wrap gap-2 mb-6 p-1 bg-white/[0.02] border border-white/5 rounded-2xl w-fit">
+
+  <a href="/manage-orders"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if not request.query_params.get('status') %}
+        bg-white/10 text-white border border-white/10
+     {% else %}
+        text-zinc-400 hover:text-white hover:bg-white/5
+     {% endif %}">
+      Semua
+  </a>
+
+  <a href="/manage-orders?status=pending"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if request.query_params.get('status') == 'pending' %}
+        bg-yellow-500/20 border border-yellow-500/30 text-yellow-400
+     {% else %}
+        text-zinc-400 hover:text-yellow-400 hover:bg-yellow-500/10
+     {% endif %}">
+      Pending
+  </a>
+
+  <a href="/manage-orders?status=paid"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if request.query_params.get('status') == 'paid' %}
+        bg-emerald-500/20 border border-emerald-500/30 text-emerald-400
+     {% else %}
+        text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10
+     {% endif %}">
+      Paid
+  </a>
+
+  <a href="/manage-orders?status=processing"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if request.query_params.get('status') == 'processing' %}
+        bg-blue-500/20 border border-blue-500/30 text-blue-400
+     {% else %}
+        text-zinc-400 hover:text-blue-400 hover:bg-blue-500/10
+     {% endif %}">
+      Processing
+  </a>
+
+  <a href="/manage-orders?status=shipped"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if request.query_params.get('status') == 'shipped' %}
+        bg-cyan-500/20 border border-cyan-500/30 text-cyan-400
+     {% else %}
+        text-zinc-400 hover:text-cyan-400 hover:bg-cyan-500/10
+     {% endif %}">
+      Shipped
+  </a>
+
+  <a href="/manage-orders?status=delivered"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if request.query_params.get('status') == 'delivered' %}
+        bg-purple-500/20 border border-purple-500/30 text-purple-400
+     {% else %}
+        text-zinc-400 hover:text-purple-400 hover:bg-purple-500/10
+     {% endif %}">
+      Delivered
+  </a>
+
+  <a href="/manage-orders?status=cancel"
+     class="px-4 py-2 rounded-xl text-xs font-medium transition-all duration-150
+     {% if request.query_params.get('status') == 'cancel' %}
+        bg-red-500/20 border border-red-500/30 text-red-400
+     {% else %}
+        text-zinc-400 hover:text-red-400 hover:bg-red-500/10
+     {% endif %}">
+      Cancel
+  </a>
+
+</div>
 
       <div class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/40 backdrop-blur shadow-2xl">
         <div class="overflow-x-auto">
@@ -203,8 +258,8 @@
                 </td>
 
                 <td class="px-5 py-4 text-center">
-                  <a href="/public/uploads/payments/{{ o.payment_picture }}" target="_blank" class="inline-block relative group">
-                    <img src="/public/uploads/payments/{{ o.payment_picture }}"
+                  <a href="/public/payments/{{ o.payment_picture }}" target="_blank" class="inline-block relative group">
+                    <img src="/public/payments/{{ o.payment_picture }}"
                          class="w-10 h-10 rounded-lg object-cover border border-white/15 group-hover:border-blue-500/50 transition-all duration-150 shadow-md">
                     <div class="absolute inset-0 bg-black/40 rounded-lg opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-150">
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>

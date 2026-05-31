@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, UploadFile, File, Form
-=======
-from fastapi import Depends, FastAPI, HTTPException, Query
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -17,7 +13,13 @@ from backend.src.utils.scemas import (
     Cart,
     Orders,
     Users,
-    Alamat
+    Alamat, 
+)
+
+from backend.src.middleware.auth import (
+    auth_middleware,
+    auth_required,
+    admin_required
 )
 from starlette.middleware.base import BaseHTTPMiddleware
 import bcrypt
@@ -25,14 +27,10 @@ import os
 from starlette.middleware.sessions import SessionMiddleware
 from backend.src.middleware.auth import auth_middleware, auth_required
 
-from backend.src.utils.db import setup_database
-from backend.src.utils.scemas import Cart, Orders, Products
-
 app = FastAPI()
 templates = Jinja2Templates(directory="frontend/src/templates")
 
 db = setup_database(app)
-<<<<<<< HEAD
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
 app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 
@@ -53,9 +51,6 @@ async def home(request: Request):
         "index.html",
         {"request": request}
     )
-=======
-
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
 
 @app.get("/health")
 async def health_check(conn=Depends(db.connection)):
@@ -63,7 +58,6 @@ async def health_check(conn=Depends(db.connection)):
     return {"status": "ok", "database": "connected"}
 
 
-<<<<<<< HEAD
     
 @app.post("/api/auth/register")
 async def register(
@@ -156,7 +150,8 @@ async def login(
 @app.get("/list-users", response_class=HTMLResponse)
 async def show_users(
     request: Request,
-    conn=Depends(db.connection)
+    conn=Depends(db.connection),
+    user=Depends(admin_required)
 ):
     sql = """
         SELECT id, name, email, role
@@ -178,7 +173,8 @@ async def show_users(
 @app.get("/list-product", response_class=HTMLResponse)
 async def show_products(
     request: Request,
-    conn=Depends(db.connection)
+    conn=Depends(db.connection),
+    user=Depends(admin_required)
 ):
     sql = """
         SELECT id, product_name, price, quantity, description, product_picture
@@ -278,8 +274,11 @@ async def product_detail(
     )
     
 @app.get("/dashboard-admin")
-async def dashboard_admin(request: Request, conn=Depends(db.connection), user=Depends(auth_required)):
-    
+async def dashboard_admin(
+    request: Request,
+    conn=Depends(db.connection),
+    user=Depends(admin_required)
+):    
     total_order = await conn.fetchval("SELECT COUNT(*) FROM orders")
     total_produk = await conn.fetchval("SELECT COUNT(*) FROM products")
     total_user = await conn.fetchval("SELECT COUNT(*) FROM users")
@@ -398,64 +397,28 @@ async def update_products(
         with open(path, "wb") as buffer:
             shutil.copyfileobj(product_picture.     file, buffer)
 
-=======
-@app.post("/api/products")
-async def post_products(products: Products, conn=Depends(db.connection)):
-    sql = "INSERT INTO products (product_name, price, quantity, description, product_picture) VALUES ($1, $2, $3, $4, $5)"
-    result = await conn.execute(
-        sql,
-        products.product_name,
-        products.price,
-        products.quantity,
-        products.description,
-        products.product_picture,
-    )
-
-    return {"msg": "berhasil upload", "data": result}
-
-
-@app.put("/api/products/{id}")
-async def update_products(id: int, products: Products, conn=Depends(db.connection)):
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
     sql = """
     UPDATE products
     SET product_name = $1,
         price = $2,
         quantity = $3,
         description = $4,
-<<<<<<< HEAD
         product_picture = COALESCE($5, product_picture)
-=======
-        product_picture = $5
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
     WHERE id = $6
     """
 
     result = await conn.execute(
         sql,
-<<<<<<< HEAD
         product_name,
         price,
         quantity,
         description,
         filename,
         id
-=======
-        id,
-        products.product_name,
-        products.price,
-        products.quantity,
-        products.description,
-        products.product_picture,
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
     )
 
     return {"msg": "berhasil update", "data": result}
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
 @app.get("/api/products")
 async def get_products(
     page: int = Query(1, ge=1),
@@ -491,7 +454,6 @@ async def delete_products(id: int, conn=Depends(db.connection)):
     result = await conn.execute(sql, id)
     return {"msg": "berhasil delete", "data": result}
 
-<<<<<<< HEAD
 @app.get("/cart", response_class=HTMLResponse)
 async def cart_page(request: Request, conn=Depends(db.connection)):
     user = request.session.get("user")
@@ -584,24 +546,40 @@ async def update_status(id: int, status: str = Form(...), conn=Depends(db.connec
 
 
 
-@app.get("/manage-orders", response_class=HTMLResponse)
-async def manage_orders(request: Request, conn=Depends(db.connection)):
+@app.get("/manage-orders")
+async def manage_orders(
+    request: Request,
+    status: str = None,
+    conn=Depends(db.connection),
+    user=Depends(admin_required)
+):
 
-    rows = await conn.fetch("""
-        SELECT *
-        FROM orders
-        ORDER BY id DESC
-    """)
+    if status:
+        orders = await conn.fetch(
+            """
+            SELECT *
+            FROM orders
+            WHERE status = $1
+            ORDER BY created_at DESC
+            """,
+            status
+        )
+    else:
+        orders = await conn.fetch(
+            """
+            SELECT *
+            FROM orders
+            ORDER BY created_at DESC
+            """
+        )
 
     return templates.TemplateResponse(
         "admin/order/manageorder.html",
         {
             "request": request,
-            "orders": rows
+            "orders": orders
         }
     )
-    
-    
     
     
     
@@ -627,7 +605,8 @@ async def set_alamat(
 @app.get("/alamat", response_class=HTMLResponse)
 async def set_alamat_page(
     request: Request,
-    conn=Depends(db.connection)
+    conn=Depends(db.connection),
+    user=Depends(admin_required),
 ):
     user = request.session.get("user")
     if not user:
@@ -819,91 +798,6 @@ async def order_items(
             """
             INSERT INTO orders (
                 product_id,
-=======
-
-@app.get("/api/cart")
-async def get_cart(
-    page: int = Query(1, ge=1),
-    limit: int = Query(10, ge=1, le=100),
-    conn=Depends(db.connection),
-):
-    sql = """
-        SELECT id, product_name, price, product_picture, quantity, user_id, product_id
-        FROM cart
-        ORDER BY id ASC
-        LIMIT $1 OFFSET $2
-    """
-
-    offset = (page - 1) * limit
-
-    rows = await conn.fetch(sql, limit, offset)
-    total_count = await conn.fetchval("SELECT COUNT(*) FROM products")
-    total_pages = (total_count + limit - 1) // limit if total_count > 0 else 0
-    products_list = [dict(row) for row in rows]
-
-    return {
-        "page": page,
-        "limit": limit,
-        "total_items": len(products_list),
-        "total_pages": total_pages,
-        "data": products_list,
-    }
-
-
-@app.post("/api/cart")
-async def add_cart(cart: Cart, conn=Depends(db.connection)):
-    sql = "INSERT INTO cart (id, product_name, price, product_picture, product_picture, quantity, user_id, product_id) VALUES ($1, $2, $3, $4, $5, $6, $7)"
-    result = await conn.execute(
-        sql,
-        cart.id,
-        cart.product_name,
-        cart.price,
-        cart.product_picture,
-        cart.quantity,
-        cart.user_id,
-        cart.product_id,
-    )
-
-    return {"msg": "success", "data": result}
-
-
-@app.delete("/api/cart/{id}")
-async def delete_cart(id: int, conn=Depends(db.connection)):
-    sql = "DELETE FROM products WHERE id = $1"
-    result = await conn.execute(sql, id)
-    return {"msg": "berhasil delete", "data": result}
-
-
-@app.post("/api/order")
-async def order_items(order: Orders, conn=Depends(db.connection)):
-    async with conn.transaction():
-        product = await conn.fetchrow(
-            "SELECT id, product_name, price, quantity, product_picture FROM products WHERE id = $1 FOR UPDATE",
-            order.id,
-        )
-
-        if not product:
-            raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
-
-        if product["quantity"] < order.quantity:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Stok tidak cukup! Tersisa: {product['quantity']}",
-            )
-
-        total_price = float(product["price"]) * order.quantity
-
-        await conn.execute(
-            "UPDATE products SET quantity = quantity - $1 WHERE id = $2",
-            order.quantity,
-            order.id,
-        )
-
-        current_user_id = 1
-
-        insert_sql = """
-            INSERT INTO orders (
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
                 product_name,
                 price,
                 quantity,
@@ -911,7 +805,6 @@ async def order_items(order: Orders, conn=Depends(db.connection)):
                 recipient_address,
                 total_price,
                 product_picture,
-<<<<<<< HEAD
                 payment_picture,
                 patokan,
                 user_id,
@@ -962,39 +855,13 @@ async def order_items(order: Orders, conn=Depends(db.connection)):
     }
     
 @app.get("/api/orders/history")
-=======
-                user_id
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-            RETURNING *;
-        """
-
-        new_order = await conn.fetchrow(
-            insert_sql,
-            product["product_name"],
-            product["price"],
-            order.quantity,
-            order.recipient_name,
-            order.recipient_address,
-            total_price,
-            product["product_picture"],
-            current_user_id,
-        )
-
-    return new_order
-
-
-@app.get("/api/orders/history", response_model=list[Orders])
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
 async def get_order_history(
     user_id: int,
     limit: int = 10,
     offset: int = 0,
     conn=Depends(db.connection),
 ):
-<<<<<<< HEAD
 
-=======
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
     sql = """
         SELECT * FROM orders
         WHERE user_id = $1
@@ -1004,7 +871,6 @@ async def get_order_history(
 
     rows = await conn.fetch(sql, user_id, limit, offset)
 
-<<<<<<< HEAD
     return [dict(row) for row in rows]
 
 @app.get("/checkout", response_class=HTMLResponse)
@@ -1067,9 +933,3 @@ async def order_page(request: Request, conn=Depends(db.connection)):
         }
     )
 
-=======
-    if not rows:
-        return []
-
-    return rows
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c

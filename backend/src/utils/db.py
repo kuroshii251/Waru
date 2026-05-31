@@ -14,8 +14,4 @@ def setup_database(app):
     async def _(conn):
         pass
 
-<<<<<<< HEAD
     return db
-=======
-    return db
->>>>>>> 3fe070cb4d321a56b6fa04e374161ddb5bf0094c
