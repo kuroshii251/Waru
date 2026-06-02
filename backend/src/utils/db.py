@@ -22,7 +22,6 @@ async def test_connection():
     )
 
     print("DATABASE CONNECTED")
-
     await conn.close()
     
 def setup_database(app):
