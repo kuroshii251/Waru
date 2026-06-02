@@ -43,6 +43,9 @@ app = FastAPI()
 templates = Jinja2Templates(directory="frontend/src/templates")
 
 db = setup_database(app)
+@app.on_event("startup")
+async def startup_test():
+    await test_connection()
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
 app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 
