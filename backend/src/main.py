@@ -1,10 +1,12 @@
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, UploadFile, File, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
+from contextlib import asynccontextmanager
 from backend.src.utils.db import setup_database
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from typing import Optional
+from backend.src.utils.db import test_connection 
 from fastapi.staticfiles import StaticFiles
 import uuid
 import os
@@ -31,7 +33,12 @@ from backend.src.middleware.auth import auth_middleware, auth_required
 
 
 
-    
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await test_connection()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 app = FastAPI()
 templates = Jinja2Templates(directory="frontend/src/templates")
 
@@ -48,6 +55,7 @@ UPLOAD_DIR = PUBLIC_DIR / "uploads"
 
 print("PUBLIC EXISTS:", PUBLIC_DIR.exists())
 print("UPLOAD EXISTS:", UPLOAD_DIR.exists())
+
 
 if PUBLIC_DIR.exists():
     app.mount(

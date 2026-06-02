@@ -2,6 +2,7 @@ import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from fastapi_asyncpg import configure_asyncpg
+import asyncpg
 
 load_dotenv()
 
@@ -13,6 +14,17 @@ parsed = urlparse(DATABASE_URL)
 print("DB HOST =", parsed.hostname)
 print("DB PORT =", parsed.port)
 
+
+async def test_connection():
+    conn = await asyncpg.connect(
+        DATABASE_URL,
+        ssl="require"
+    )
+
+    print("DATABASE CONNECTED")
+
+    await conn.close()
+    
 def setup_database(app):
     db = configure_asyncpg(
     app,
