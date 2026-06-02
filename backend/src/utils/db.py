@@ -14,7 +14,7 @@ print("DB HOST =", parsed.hostname)
 print("DB PORT =", parsed.port)
 
 def setup_database(app):
-db = configure_asyncpg(
+    db = configure_asyncpg(
     app,
     DATABASE_URL,
     ssl="require"
