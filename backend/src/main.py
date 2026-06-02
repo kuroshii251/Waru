@@ -3,7 +3,9 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from backend.src.utils.db import setup_database
+from pathlib import Path
 from typing import Optional
+from fastapi.staticfiles import StaticFiles
 import uuid
 import os
 import shutil
@@ -36,14 +38,24 @@ app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 
 from fastapi.staticfiles import StaticFiles
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+PUBLIC_DIR = BASE_DIR / "frontend" / "src" / "public"
+
 app.mount(
     "/public",
-    StaticFiles(directory="frontend/src/public"),
+    StaticFiles(directory=str(PUBLIC_DIR)),
     name="public"
 )
-from fastapi.staticfiles import StaticFiles
 
-app.mount("/uploads", StaticFiles(directory="frontend/src/public/uploads"), name="uploads")
+
+UPLOAD_DIR = PUBLIC_DIR / "uploads"
+
+app.mount(
+    "/uploads",
+    StaticFiles(directory=str(UPLOAD_DIR)),
+    name="uploads"
+)
 
 @app.get("/")
 async def home(request: Request):
