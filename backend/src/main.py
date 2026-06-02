@@ -1,9 +1,9 @@
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, UploadFile, File, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
 from backend.src.utils.db import setup_database
 from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 from typing import Optional
 from fastapi.staticfiles import StaticFiles
 import uuid
@@ -30,12 +30,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from backend.src.middleware.auth import auth_middleware, auth_required
 
 
-print("CWD:", os.getcwd())
 
-for root, dirs, files in os.walk("/var/task"):
-    print(root)
-    if root.count("/") > 5:
-        continue
     
 app = FastAPI()
 templates = Jinja2Templates(directory="frontend/src/templates")
@@ -44,26 +39,42 @@ db = setup_database(app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
 app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 
-from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-PUBLIC_DIR = BASE_DIR / "frontend" / "src" / "public"
 
-app.mount(
-    "/public",
-    StaticFiles(directory=str(PUBLIC_DIR)),
-    name="public"
-)
-
-
+PUBLIC_DIR = Path("/var/task/frontend/src/public")
 UPLOAD_DIR = PUBLIC_DIR / "uploads"
 
-app.mount(
-    "/uploads",
-    StaticFiles(directory=str(UPLOAD_DIR)),
-    name="uploads"
-)
+print("PUBLIC EXISTS:", PUBLIC_DIR.exists())
+print("UPLOAD EXISTS:", UPLOAD_DIR.exists())
+
+if PUBLIC_DIR.exists():
+    app.mount(
+        "/public",
+        StaticFiles(directory=str(PUBLIC_DIR)),
+        name="public"
+    )
+
+if UPLOAD_DIR.exists():
+    app.mount(
+        "/uploads",
+        StaticFiles(directory=str(UPLOAD_DIR)),
+        name="uploads"
+    )
+# app.mount(
+#     "/public",
+#     StaticFiles(directory=str(PUBLIC_DIR)),
+#     name="public"
+# )
+
+
+
+# app.mount(
+#     "/uploads",
+#     StaticFiles(directory=str(UPLOAD_DIR)),
+#     name="uploads"
+# )
 
 @app.get("/")
 async def home(request: Request):
