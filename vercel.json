@@ -1,15 +1,9 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "backend/src/main.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.11",
-        "includeFiles": [
-          "frontend/src/templates/**",
-          "frontend/src/public/**"
-        ]
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [

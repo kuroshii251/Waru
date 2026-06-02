@@ -3,3 +3,5 @@
 =======
 .env
 >>>>>>> 3a2a0c74d21dfad1e3ff92da27afd1a5d3f53755
+.vercel
+.env*
