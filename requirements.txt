@@ -6,3 +6,4 @@ bcrypt
 asyncpg
 python-dotenv
 pydantic
+fastapi-asyncpg
