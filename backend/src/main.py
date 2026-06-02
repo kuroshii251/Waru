@@ -29,6 +29,14 @@ import os
 from starlette.middleware.sessions import SessionMiddleware
 from backend.src.middleware.auth import auth_middleware, auth_required
 
+
+print("CWD:", os.getcwd())
+
+for root, dirs, files in os.walk("/var/task"):
+    print(root)
+    if root.count("/") > 5:
+        continue
+    
 app = FastAPI()
 templates = Jinja2Templates(directory="frontend/src/templates")
 
