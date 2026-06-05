@@ -33,17 +33,14 @@ from backend.src.middleware.auth import auth_middleware, auth_required
 
 
 
-@asynccontextmanager
 async def lifespan(app: FastAPI):
     await test_connection()
     yield
 
 app = FastAPI(lifespan=lifespan)
-app = FastAPI()
 templates = Jinja2Templates(directory="frontend/src/templates")
 
 db = setup_database(app)
-@app.on_event("startup")
 async def startup_test():
     await test_connection()
 app.add_middleware(BaseHTTPMiddleware, dispatch=auth_middleware)
@@ -53,7 +50,7 @@ app.add_middleware(SessionMiddleware, secret_key="SECRET_KEY")
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
-PUBLIC_DIR = Path("/var/task/frontend/src/public")
+PUBLIC_DIR = Path("frontend/src/public")
 UPLOAD_DIR = PUBLIC_DIR / "uploads"
 
 print("PUBLIC EXISTS:", PUBLIC_DIR.exists())
@@ -61,31 +58,18 @@ print("UPLOAD EXISTS:", UPLOAD_DIR.exists())
 
 
 if PUBLIC_DIR.exists():
-    app.mount(
-        "/public",
-        StaticFiles(directory=str(PUBLIC_DIR)),
-        name="public"
-    )
+ app.mount(
+    "/public",
+    StaticFiles(directory=str(PUBLIC_DIR)),
+    name="public"
+)
 
-if UPLOAD_DIR.exists():
-    app.mount(
-        "/uploads",
-        StaticFiles(directory=str(UPLOAD_DIR)),
-        name="uploads"
-    )
-# app.mount(
-#     "/public",
-#     StaticFiles(directory=str(PUBLIC_DIR)),
-#     name="public"
-# )
+app.mount(
+    "/uploads",
+    StaticFiles(directory=str(UPLOAD_DIR)),
+    name="uploads"
+)
 
-
-
-# app.mount(
-#     "/uploads",
-#     StaticFiles(directory=str(UPLOAD_DIR)),
-#     name="uploads"
-# )
 
 @app.get("/")
 async def home(request: Request):

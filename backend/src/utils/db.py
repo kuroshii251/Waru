@@ -14,11 +14,10 @@ parsed = urlparse(DATABASE_URL)
 print("DB HOST =", parsed.hostname)
 print("DB PORT =", parsed.port)
 
-
 async def test_connection():
     conn = await asyncpg.connect(
         DATABASE_URL,
-        ssl="require"
+        ssl=False
     )
 
     print("DATABASE CONNECTED")
@@ -26,10 +25,11 @@ async def test_connection():
     
 def setup_database(app):
     db = configure_asyncpg(
-    app,
-    DATABASE_URL,
-    ssl="require"
-)
+        app,
+        DATABASE_URL,
+        ssl=False
+    )
+
     @db.on_init
     async def _(conn):
         print("Database connected")
